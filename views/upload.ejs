@@ -1,0 +1,33 @@
+<script>
+    alert("<%(ContainerFlag)%>");
+    function submitForm() {
+
+        if ($('#upload input[type=file]').get(0).files.length>=1) {
+            document.forms['upload'].submit();
+        } else {
+            $("#itemNameError").html("No file selected");
+        }
+
+        //$('#upload input[type=file]').get(0).files.length;
+        //$('#upload input[type=file]').get(0).files.length
+    }
+</script>
+<section class="mainSection">
+    <% if (true) {%>
+        <h1 class="pageTitle">Upload file</h1>
+        <form id="upload" action="/uploadhandler" method="post" enctype="multipart/form-data">
+            <fieldset>
+                <legend>Upload</legend>
+                <ol>
+                    <li>
+                        <span id="itemNameError" class="error"></span>
+                    </li>
+                    <input type="file" id="files" name="uploadedFile" multiple="multiple"/>
+                </ol>
+                <input type="button" class="submit" value="Upload" title="Upload" onclick="javascript:submitForm()" />
+            </fieldset>
+        </form>
+    <%} else {%>
+        Nothing to see here. <a href="./">Click to create new container</a>.
+    <%}%>
+</section>

@@ -1,0 +1,20 @@
+<section class="mainSection">
+    <h1 class="pageTitle">Blob Uploader</h1>
+    <p>Choose the container:</p>
+
+
+    <% if (serverContainers.length > 0) { %>
+        <ul>
+            <% for (var i = 0; i < serverContainers.length; i++) { %>
+                <li class="containerItem">
+                    <%= serverContainers[i].name %>
+                    <a class="deleteContainer" href="#"> Delete</a>
+
+
+                </li>
+            <% } %>
+        </ul>
+    <% } else { %>
+        Nothing to see here.
+    <% } %>
+</section>

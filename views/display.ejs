@@ -1,0 +1,77 @@
+<script>
+
+    function deleteBlob(blobId) {
+        $("#DeleteConfirmationDialog" + blobId).dialog(
+            {
+                resizable: false, height: 250, width: 300, modal: true,
+                buttons: {
+                    'OK': function () {
+                        document.forms['deleteBlobForm' + blobId].submit();
+                    },
+                    'Cancel': function () {
+                        $(this).dialog("close");
+                    }
+                }
+            }
+        );
+    }
+
+
+    function submitForm() {
+
+        if ($('#upload input[type=file]').get(0).files.length >= 1) {
+            document.forms['upload'].submit();
+        } else {
+            $("#itemNameError").html("No file selected")
+        }
+
+    }
+
+
+</script>
+
+
+<section class="mainSection">
+
+    <% if (serverBlobs === null) { %>
+    Nothing to see here. <a href="./">Click to create new container</a>.
+    <% } else {%>
+
+        <h1 class="pageTitle">Upload file</h1>
+        <form id="upload" action="/uploadhandler" method="post" enctype="multipart/form-data">
+            <fieldset>
+                <legend>Upload</legend>
+                <ol>
+                    <li>
+                        <span id="itemNameError" class="error"></span>
+                    </li>
+                    <input type="file" id="files" name="uploadedFile" multiple="multiple"/>
+                </ol>
+                <input type="button" class="submit" value="Upload" title="Upload" onclick="javascript:submitForm()"/>
+            </fieldset>
+        </form>
+
+        <br><br>
+
+        <%if (serverBlobs.length > 0) { %>
+            <h1 class="pageTitle">Blobs Available</h1>
+            <ul>
+                <% for (var i = 0; i < serverBlobs.length; i++) { %>
+                <li class="blobItem">
+                    <%= serverBlobs[i].name %>
+                    <a class="downloadBlob" href="/Download/<%= serverBlobs[i].name %>"></a>
+                    <a class="deleteBlob" href="javascript:deleteBlob(<%= i %>)"></a>
+                    <form id="deleteBlobForm<%= i %>" action="/Delete/<%= serverBlobs[i].name %>" method="post"></form>
+                    <div id="DeleteConfirmationDialog<%= i %>" class="jquery-dialog" title="Delete Blob">
+                        <span class="ui-icon ui-icon-alert ui-icon-float"></span>
+                        <p>Are you sure you want to delete <%= serverBlobs[i].name %>?</p>
+                    </div>
+                </li>
+                <% } %>
+            </ul>
+        <% } else { %>
+            <p>Nothing to see here. <a href="#upload">Click to upload.</a></p>
+        <% } %>
+    <% } %>
+
+</section>
