@@ -13,7 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-
+var nconf = require('nconf');
+nconf.env().file({ file: 'config.json', search: true });
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
 var path = require('path');
@@ -22,13 +23,8 @@ var formidable = require('formidable');
 var helpers = require('./helpers.js');
 
 var app = express();
-var account = 'testsforai';
-// var blobUri = '';
-// var sas = '?sv=2016-05-31&ss=bfqt&srt=sco&sp=rwdlacup&se=2017-06-20T19:05:18Z&st=2017-06-20T11:05:18Z&spr=https&sig=m5Kx7WLkx1yE4rz3efA9bkJxlRHpxmBdMMaPd1%2Fcc48%3D';
-//
-// blobUri = 'https://' + account + '.blob.core.windows.net';
-var cs = "DefaultEndpointsProtocol=https;AccountName=testsforai;AccountKey=azEXqUCCNTCZ87vskbnbZFMsFEcwEoHk/dsKIbNwzAWbc/s4+1Qf5f/1/emWXSp5birsxnl3hTQJ2CuVryFCbw==;EndpointSuffix=core.windows.net";
-
+var account = nconf.get("STORAGE_NAME");
+var cs = nconf.get("CONNECTION_STRING");
 // Global request options, set the retryPolicy
 var blobClient = azure.createBlobService(cs).withFilter(new azure.ExponentialRetryPolicyFilter());
 var containerName = 'webpi';
@@ -73,13 +69,21 @@ app.get('/', function (req, res) {
 
 
 
-app.get('/Upload', function (req, res) {
-  res.render('upload.ejs', { title: 'Upload File' });
-});
+// app.get('/Upload', function (req, res) {
+//
+//     console.log(containerName);
+//   res.render('upload.ejs', { title: 'Upload File', ContainerFlag: (containerName.length===null)});
+// });
 
 app.get('/Display', function (req, res) {
   blobClient.listBlobsSegmented(containerName, null, function (error, blobs, result) {
-    res.render('display.ejs', { title: 'List of Blobs', serverBlobs: blobs.entries });
+      if (blobs===null){
+          // helpers.renderError(res);
+          res.render('display.ejs', { title: 'List of Blobs' ,serverBlobs: null});
+      }else{
+          res.render('display.ejs', { title: 'List of Blobs', serverBlobs: blobs.entries });
+      }
+
   });
 });
 
@@ -103,20 +107,24 @@ app.post('/uploadhandler', function (req, res) {
   form.parse(req, function (err, fields, files) {
       var errorflag =false;
       var filearray = [];
+      var restmp = res;
+      var finishedOrError;
       if (files.uploadedFile.length === undefined) {
           filearray = [files.uploadedFile];
+
       }
       else{
           filearray = files.uploadedFile;
       }
-
       //////////////////////////////////////
       var options;
       var blockSize;
+
       var speedSummary;
       for (var i=0;i<filearray.length;i++){
-
+          // console.log(filearray[i].name);
           blockSize = filearray[i].size > 1024 * 1024 * 32 ? 1024 * 1024 * 4 : 1024 * 512;
+          finishedOrError = false;
           options = {
               contentType: filearray[i].type,
               metadata: { fileName: filearray[i].name },
@@ -126,36 +134,36 @@ app.post('/uploadhandler', function (req, res) {
           blobClient.singleBlobPutThresholdInBytes = blockSize;
 
           speedSummary = blobClient.createBlockBlobFromLocalFile(containerName, filearray[i].name, filearray[i].path, options, function(error) {
+              finishedOrError = true;
               if (error) {
                   console.log(error);
                   helpers.renderError(res);
                   errorflag = true;
               }
-              // else {
-              //     if (i==filearray.length-1){
-              //         setTimeout(function() { // Prevent alert from stopping UI progress update
-              //             alert('Upload successfully!');
-              //         }, 1000);
-              //
-              //     }
-              // }
+              else {
+                  // console.log("====== " +i+" ======");
+                  // console.log(res);
+              }
           });
 
-          // options = {
-          //     contentType: filearray[i].type,
-          //     metadata: { fileName: filearray[i].name }
-          // };
-          //
-          // blobClient.createBlockBlobFromLocalFile(containerName, filearray[i].name, filearray[i].path, options, function (error) {
-          //     if (error != null) {
-          //         helpers.renderError(res);
-          //     } else {
-          //         res.redirect('/Display');
-          //     }
-          // });
 
       }
-      if (!errorflag) res.redirect('/Display');
+
+      // function refreshProgress() {
+      //     setTimeout(function() {
+      //         if (!finishedOrError) {
+      //             var process = speedSummary.getCompletePercent();
+      //             console.log("current: "+process);
+      //             refreshProgress();
+      //         }
+      //     }, 200);
+      // }
+      while (speedSummary.getCompletePercent()<100){
+          console.log(speedSummary.getCompletePercent());
+      }
+
+
+      res.redirect('/Display');
 
   });
 });
@@ -186,5 +194,7 @@ function setPermissions() {
     } 
   });
 }
+
+
 
 module.exports = app;

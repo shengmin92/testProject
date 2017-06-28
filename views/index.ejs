@@ -1,20 +1,122 @@
+<script>
+
+    function createNewContainer(){
+        if ($('#containerNameBox').val().length === 0){
+            $('#containerNameError').html("You must provide a valid name!");
+        }else{
+            document.forms['createConatinerForm'].submit();
+        }
+    }
+
+
+    function deleteContainer(containerId) {
+//        alert(containerId);
+        $("#DeleteContainerConfirmationDialog" + containerId).dialog(
+            {
+                resizable: false, height: 250, width: 300, modal: true,
+                buttons: {
+                    'OK': function () {
+                        document.forms['deleteContainerForm' + containerId].submit();
+                    },
+                    'Cancel': function () {
+                        $(this).dialog("close");
+                    }
+                }
+            }
+        );
+    }
+
+//    jQuery(document).ready(function($) {
+//        $(".clickable-row").click(function() {
+//            window.location = $(this).data("href");
+//        });
+//    });
+
+    function chooseContainerName(containerName){
+
+        $.ajax({
+            type: 'post',
+            url: '/SelectContainer/'+containerName,
+            data: {"containername": containerName}
+        })
+//        console.log(containerName);
+    }
+
+</script>
+
 <section class="mainSection">
-    <h1 class="pageTitle">Blob Uploader</h1>
-    <p>Choose the container:</p>
+    <h1 class="pageTitle">Blob Containers Management</h1>
 
 
-    <% if (serverContainers.length > 0) { %>
-        <ul>
-            <% for (var i = 0; i < serverContainers.length; i++) { %>
-                <li class="containerItem">
-                    <%= serverContainers[i].name %>
-                    <a class="deleteContainer" href="#"> Delete</a>
+    <button class="btn btn-info btn-xs" data-toggle="modal" data-target="#myModal">Add Container</button>
+
+    <!-- Modal -->
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Create Container</h4>
+                </div>
+                <form id="createConatinerForm" action="/CreateContainer" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="containerNameBox">What is the name of the new blob container?</label>
+                        <span id="containerNameError" class="error"></span>
+                        <input class="form-control" name="containerNameBox" id="containerNameBox" />
+                    </div>
+                </form>
 
 
-                </li>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="create-container-button" >Create</button>
+                    <!--onclick="javascript:createNewContainer()"-->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+
+    <div class="container">
+        <p>Choose the container:</p>
+        <table class="table table-condensed">
+            <tr>
+                <th>Container Name</th>
+                <th>Upload Time</th>
+                <th>Operations</th>
+            </tr>
+
+            <% if (serverContainers.length > 0) { %>
+            <ul>
+                <% for (var i = 0; i < serverContainers.length; i++) { %>
+                <tr class="clickable-row" id="<%= serverContainers[i].name %>" onclick="javascript:chooseContainerName('<%= serverContainers[i].name %>')">
+                    <td ><%= serverContainers[i].name %></td>
+                    <td><%=serverContainers[i].lastModified%> </td>
+                    <td>
+                        <a class="deleteContainer" aria-hidden="true" href="javascript:deleteContainer(<%= i %>)">Delete</a>
+                    </td>
+                </tr>
+
+                <form id="deleteContainerForm<%= i %>" action="/DeleteContainer/<%= serverContainers[i].name %>" method="post"></form>
+                <div id="DeleteContainerConfirmationDialog<%= i %>" class="jquery-dialog" title="Delete Container">
+                    <span class="ui-icon ui-icon-alert ui-icon-float"></span>
+                    <p>Are you sure you want to delete the container <%= serverContainers[i].name %>?</p>
+                </div>
+                <% } %>
+            </ul>
+            <% } else { %>
+            <tr><td>Currently no existing container...</td><td></td><td></td></tr>
             <% } %>
-        </ul>
-    <% } else { %>
-        Nothing to see here.
-    <% } %>
+        </table>
+    </div>
+
+
+
+    </table>
+
+
+
 </section>

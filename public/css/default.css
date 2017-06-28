@@ -4,13 +4,13 @@ html {
     min-height: 700px;
 }
 
-a {
-    outline: none;
-}
+/*a {*/
+    /*outline: none;*/
+/*}*/
 
-li {
-    margin: 5px 0 5px;
-}
+/*li {*/
+    /*margin: 5px 0 5px;*/
+/*}*/
 
 body {
     background: #ebf0f2;
@@ -21,27 +21,28 @@ body {
     min-height: 900px;
 }
 
-.mainWrapper {
-    position: relative;
-    background-color: rgba(204, 204, 204, 0.75);
-    width: 850px;
-    margin: 0 auto;
-    min-height: 100%;
-}
+/*.mainWrapper {*/
+    /*position: relative;*/
+    /*background-color: rgba(204, 204, 204, 0.75);*/
+    /*width: 850px;*/
+    /*margin: 0 auto;*/
+    /*min-height: 100%;*/
+/*}*/
 
-.mainLayout {
-    clear: both;
-    width: 850px;
-    padding-bottom: 25px;
-    height: 100%;
-}
+/*.mainLayout {*/
+    /*clear: both;*/
+    /*width: 850px;*/
+    /*padding-bottom: 25px;*/
+    /*height: 100%;*/
+/*}*/
 
 .mainSection {
     position: relative;
     margin: 50px 0 25px 90px;
 }
 
-header, footer {
+/*header, */
+footer {
     font-weight: bold;
     font-size: 0.9em;
     color: #e6e2df;
@@ -419,19 +420,27 @@ fieldset {
     padding-right: 12px;
     background: url("Images/add.png") no-repeat;
 }
-.downloadBlob {
+.fa-download {
     display: block;
     float: right;
-    width: 48px;
-    height: 48px;
-    background: url("/Images/download.png") no-repeat;
+    width: 20px;
+    height: 20px;
+    /*background: url("/Images/download.png") no-repeat;*/
 }
-.deleteBlob {
+.fa-trash {
     display: block;
     float: right;
-    width: 48px;
-    height: 48px;
-    background: url("/Images/delete.png") no-repeat;
+    width: 20px;
+    height: 20px;
+    /*background: url("/Images/delete.png") no-repeat;*/
+}
+
+.fa-eye {
+    display: block;
+    float: right;
+    width: 20px;
+    height: 20px;
+    /*background: url("/Images/delete.png") no-repeat;*/
 }
 .blobItem {
     clear: both;
