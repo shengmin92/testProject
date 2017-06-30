@@ -25,9 +25,12 @@ var helpers = require('./helpers.js');
 var app = express();
 var account = nconf.get("STORAGE_NAME");
 var cs = nconf.get("CONNECTION_STRING");
+var blobUri = "";
+
+
 // Global request options, set the retryPolicy
-var blobClient = azure.createBlobService(cs).withFilter(new azure.ExponentialRetryPolicyFilter());
-var containerName = 'webpi'; // = 'webpi'
+var blobClient = azure.createBlobService(cs).withFilter(new azure.ExponentialRetryPolicyFilter());  // 之后删掉
+var containerName = ''; // = 'webpi'
 
 //Configuration
 app.set('views', path.join(__dirname + '/views'));
@@ -48,32 +51,72 @@ app.param('id', function (req, res, next) {
     next();
 });
 
+///////////////////////////////////////////////////////
+// function checkIdentity(){
+//     account = nconf.get("STORAGE_NAME");
+//     cs = nconf.get("CONNECTION_STRING");
+//
+//     if (account == null || account.length < 1) {
+//         console.log('Please enter a valid storage account name!');
+//         return false;
+//     }
+//     if (cs == null || sas.length < 1) {
+//         console.log('Please enter a valid SAS Token!');
+//         return false;
+//     }
+//
+//     return true;
+// }
+//
+// function getBlobClient(){
+//     if (!checkIdentity()){
+//         return null;
+//     }
+//
+//     blobUri = 'https://' + account + '.blob.core.windows.net';
+//     var blobClient = azure.createBlobService(cs).withFilter(new azure.ExponentialRetryPolicyFilter());
+//     return blobClient;
+// }
+///////////////////////////////////////////////////////////////////////
+
+
+
+
+
 
 //Routes
 
 app.get('/', function (req, res) {
+    //
     blobClient.listContainersSegmented(null, function (error, containers, results) {
         if (error) {
-            alert('List container error, please open browser console to view detailed error');
+            // res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries});
+
             console.log(error);
+            // res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries, currentContainer: containerName});
         } else {
 
-            res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries});
+            res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries, currentContainer: containerName});
         }
     });
+
 
 });
 
-
+/// <<<<<<<<<<<=================  Last modification Here
 app.get('/Display', function (req, res) {
-    blobClient.listBlobsSegmented(containerName, null, function (error, blobs, result) {
-        if (blobs === null) {
-            // helpers.renderError(res);
-            res.render('display.ejs', {title: 'List of Blobs', serverBlobs: null});
-        } else {
-            res.render('display.ejs', {title: 'List of Blobs', serverBlobs: blobs.entries});
-        }
-    });
+    if (containerName.length>0){
+        blobClient.listBlobsSegmented(containerName, null, function (error, blobs, result) {
+            if (blobs === null) {
+                helpers.renderError(res);
+                res.render('display.ejs', {title: 'List of Blobs', serverBlobs: null, currentContainer: containerName});
+            } else {
+                res.render('display.ejs', {title: 'List of Blobs', serverBlobs: blobs.entries, currentContainer: containerName});
+            }
+        });
+    }else{
+        res.render('display.ejs', {title: 'List of Blobs', serverBlobs: null, currentContainer: containerName});
+    }
 });
 
 app.get('/Download/:id', function (req, res) {
@@ -87,12 +130,14 @@ app.get('/Download/:id', function (req, res) {
             helpers.renderError(res);
         }
     });
+
+
 });
 
 
 app.post('/CreateContainer', function (req, res) {
     if (!blobClient) {
-        res.redirect('/');
+        // res.redirect('/');
         return;
     }
     var form = new formidable.IncomingForm();
@@ -103,7 +148,7 @@ app.post('/CreateContainer', function (req, res) {
                 console.log(error);
 
             } else {
-                setPermissions();
+                setPermissions(newContainerName);
                 res.redirect('/');
             }
         });
@@ -164,13 +209,18 @@ app.post('/uploadhandler', function (req, res) {
 
 
 app.post('/DeleteContainer/:id', function (req, res) {
-    blobClient.deleteContainerIfExists(containerName, function (error, result) {
+    console.log("Container deleted: "+req.params.id);
+
+    blobClient.deleteContainerIfExists(req.params.id, function (error, result) {
         if (error) {
             // alert('Delete container failed, open brower console for more detailed info.');
             console.log(error);
         } else {
             // alert('Delete ' + name + ' successfully!');
             //refreshContainer();
+            if (containerName===req.params.id){
+                containerName="";
+            }
             return res.redirect('/');
         }
     });
@@ -178,7 +228,7 @@ app.post('/DeleteContainer/:id', function (req, res) {
 
 
 app.post('/Delete/:id', function (req, res) {
-
+    console.log("Blob deleted: "+req.params.id);
     blobClient.deleteBlob(containerName, req.params.id, function (error) {
         if (error != null) {
             helpers.renderError(res);
@@ -188,30 +238,43 @@ app.post('/Delete/:id', function (req, res) {
     });
 });
 
-app.post('/SelectContainer/:name', function (req, res) {
-    console.log(req.params);
+app.get('/SelectContainer/:name', function (req, res) {
+    console.log("Container selected: "+req.params.name);
     containerName = req.params.name;
+    blobClient.listContainersSegmented(null, function (error, containers, results) {
+        if (error) {
+            // res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries});
+            console.log(error);
+        } else {
 
+            res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries, currentContainer: containerName});
+        }
+    });
 });
 
 
-blobClient.createContainerIfNotExists(containerName, function (error) {
-    if (error) {
-        console.log(error);
-    } else {
-        setPermissions();
-    }
-});
+// blobClient.createContainerIfNotExists(containerName, function (error) {
+//     if (error) {
+//         console.log(error);
+//     } else {
+//         setPermissions();
+//     }
+// });
 
 
-function setPermissions() {
+
+
+function setPermissions(ctnName) {
     var options = {publicAccessLevel: azure.BlobUtilities.BlobContainerPublicAccessType.BLOB};
-    blobClient.setContainerAcl(containerName, null, options, function (error) {
+    blobClient.setContainerAcl(ctnName, null, options, function (error) {
         if (error) {
             console.log(error);
         }
     });
 }
 
+function refreshContainerList(){
+
+}
 
 module.exports = app;

@@ -1,19 +1,9 @@
 <script>
 
     function deleteBlob(blobId) {
-        $("#DeleteConfirmationDialog" + blobId).dialog(
-            {
-                resizable: false, height: 250, width: 300, modal: true,
-                buttons: {
-                    'OK': function () {
-                        document.forms['deleteBlobForm' + blobId].submit();
-                    },
-                    'Cancel': function () {
-                        $(this).dialog("close");
-                    }
-                }
-            }
-        );
+
+        document.forms['deleteBlobForm' + blobId].submit();
+
     }
 
 
@@ -21,16 +11,9 @@
 
         if ($('#upload input[type=file]').get(0).files.length >= 1) {
             $("#myProgress").append('<div id="progress-bar" class="progress-bar progress-bar-striped active " role="progressbar"></div>');
-            //<div id="myBar"></div>
-            //<div id="progress-bar" class="progress-bar progress-bar-striped active " role="progressbar"></div>
+
             move();
-
             document.forms['upload'].submit();
-
-
-//        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
-//                40%
-//                </div>
 
         } else {
             $("#itemNameError").html("No file chosen. By clicking the Choose Files button below, you can select the files you want to upload.");
@@ -60,23 +43,20 @@
 </script>
 
 <style>
-    /*#myProgress {*/
-    /*width: 90%;*/
-    /*}*/
 
     #myProgress {
         width: 90%;
         background-color: #ddd;
     }
 
-    #myBar {
-        width: 10%;
-        height: 30px;
-        background-color: #4CAF50;
-        text-align: center;
-        line-height: 30px;
-        color: white;
-    }
+    /*#myBar {*/
+    /*width: 10%;*/
+    /*height: 30px;*/
+    /*background-color: #4CAF50;*/
+    /*text-align: center;*/
+    /*line-height: 30px;*/
+    /*color: white;*/
+    /*}*/
 
 
 </style>
@@ -84,71 +64,106 @@
 <section class="mainSection">
 
     <% if (serverBlobs === null) { %>
-    Nothing to see here. <a href="./">Click to create new container</a>.
+    No folder selected. <a href="./">Click here to select or create a folder</a>.
     <% } else { %>
-    <h1 class="pageTitle">Upload file</h1>
-    <!--<div id="myProgress"> </div>-->
+    <h1 class="pageTitle">File Uploader</h1>
 
     <div id="myProgress">
-        <!--<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">-->
-        <!--40%-->
-        <!--</div>-->
+
 
     </div>
     <br>
 
     <form id="upload" action="/uploadhandler" method="post" enctype="multipart/form-data">
         <fieldset>
-            <legend>Upload</legend>
-            <ol>
-                <li>
-                    <span id="itemNameError" class="error"></span>
-                </li>
-                <input class="form-control-file" type="file" id="files" name="uploadedFile" multiple="multiple" />
+            <legend>Choose the files you want to upload</legend>
+            <!--<ol>-->
+                <!--<li>-->
+                    <!--<span id="itemNameError" class="error"></span>-->
+                <!--</li>-->
+                <!--<input class="form-control-file" type="file" id="files" name="uploadedFile" multiple="multiple"/>-->
 
-            </ol>
-            <input type="button" class="submit btn-primary" value="Upload" title="Upload" onclick="javascript:submitForm()"/>
+            <!--</ol>-->
+
+            <span id="itemNameError" class="error"></span>
+            <input class="form-control-file" type="file" id="files" name="uploadedFile" multiple="multiple"/><br>
+            <input type="button" class="submit btn-primary" value="Upload" title="Upload"
+                   onclick="javascript:submitForm()"/>
         </fieldset>
     </form>
 
 
     <br><br>
-    <h1 class="pageTitle">Blobs Available</h1>
+    <h1 class="pageTitle">Files in <%= currentContainer%></h1>
     <% if (serverBlobs.length > 0) { %>
+    <table class="table table-hover">
+        <tr>
+            <th>File Name</th>
+            <th>Operations</th>
+        </tr>
 
-    <ul>
-        <% for (var i = 0; i < serverBlobs.length; i++) { %>
-        <li class="blobItem">
-            <%= serverBlobs[i].name %>
+    <% for (var i = 0; i < serverBlobs.length; i++) { %>
 
+    <tr>
+        <td><%= serverBlobs[i].name %></td>
 
-            <!-- button for delete -->
-            <a class="fa fa-trash" aria-hidden="true" href="javascript:deleteBlob(<%= i %>)"></a>
+        <td>
+
 
             <!-- button for download -->
-            <a class="fa fa-download" aria-hidden="true" href="/Download/<%= serverBlobs[i].name %>"></a>
+            <a class="fa fa-download" href="/Download/<%= serverBlobs[i].name %>" ></a>
 
-            <!--button for preview-->
-            <a class="fa fa-eye" aria-hidden="true"></a>
+            <!-- button for delete -->
+            <a class="fa fa-trash" class="badge" data-toggle="modal"
+               data-target="#deleteBlobModal<%= i %>"></a>
 
-            <!--<div id="myModal" class="modal">-->
-                <!--<span class="close">&times;</span>-->
-                <!--<img class="modal-content" id="img-<%= serverBlobs[i].name %>">-->
-                <!--<div id="caption"></div>-->
-            <!--</div>-->
+            <!--&lt;!&ndash;button for preview&ndash;&gt;-->
+            <!--<a class="fa fa-eye" aria-hidden="true"></a>-->
+
+        </td>
+    </tr>
+
+    <!--<li class="blobItem">-->
+        <!--<form id="deleteBlobForm<%= i %>" action="/Delete/<%= serverBlobs[i].name %>" method="post"></form>-->
+        <!--<div id="DeleteConfirmationDialog<%= i %>" class="jquery-dialog" title="Delete Blob">-->
+            <!--<span class="ui-icon ui-icon-alert ui-icon-float"></span>-->
+            <!--<p>Are you sure you want to delete <%= serverBlobs[i].name %>?</p>-->
+        <!--</div>-->
+    <!--</li>-->
 
 
+        <!-- Modal -->
+        <div class="modal fade" id="deleteBlobModal<%= i %>" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Delete File</h4>
+                    </div>
+                    <form id="deleteBlobForm<%= i %>" action="/Delete/<%= serverBlobs[i].name %>"
+                          method="post" enctype="multipart/form-data">
+                        <div class="form-group" id="DeleteBlobConfirmationDialog<%= i %>">
 
-            <form id="deleteBlobForm<%= i %>" action="/Delete/<%= serverBlobs[i].name %>" method="post"></form>
-            <div id="DeleteConfirmationDialog<%= i %>" class="jquery-dialog" title="Delete Blob">
-                <span class="ui-icon ui-icon-alert ui-icon-float"></span>
-                <p>Are you sure you want to delete <%= serverBlobs[i].name %>?</p>
-            </div>
-        </li>
-        <% } %>
-    </ul>
+                            <p class="modal-body text-center pagination-centered"> Are you
+                                sure you want to delete the file <%= serverBlobs[i].name %>?</p>
+                        </div>
+                    </form>
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="create-blob-button"
+                                onclick="javascript:deleteBlob('<%= i %>')">Delete
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    <% } %>
+    </table>
     <% } else { %>
-    <p>Nothing to see here. <a href="#files">Click to upload.</a></p>
+    <p>Nothing to see here. <a href="#files">Use the file uploader above to upload.</a></p>
     <% } %>
     <% } %>
 
