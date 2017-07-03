@@ -114,6 +114,7 @@ app.get('/Display', function (req, res) {
                     currentContainer: containerName
                 });
             } else {
+                console.log(blobs.entries);
                 res.render('display.ejs', {
                     title: 'Aerial Insights - Files Management',
                     serverBlobs: blobs.entries,
