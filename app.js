@@ -111,14 +111,16 @@ app.get('/Display', function (req, res) {
                 res.render('display.ejs', {
                     title: 'Aerial Insights - Files Management',
                     serverBlobs: null,
-                    currentContainer: containerName
+                    currentContainer: containerName,
+                    azureAccount: account
                 });
             } else {
                 console.log(blobs.entries);
                 res.render('display.ejs', {
                     title: 'Aerial Insights - Files Management',
                     serverBlobs: blobs.entries,
-                    currentContainer: containerName
+                    currentContainer: containerName,
+                    azureAccount: account
                 });
             }
         });
@@ -126,7 +128,8 @@ app.get('/Display', function (req, res) {
         res.render('display.ejs', {
             title: 'Aerial Insights - Files Management',
             serverBlobs: null,
-            currentContainer: containerName
+            currentContainer: containerName,
+            azureAccount: account
         });
     }
 });
