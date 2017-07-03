@@ -80,10 +80,6 @@ app.param('id', function (req, res, next) {
 ///////////////////////////////////////////////////////////////////////
 
 
-
-
-
-
 //Routes
 
 app.get('/', function (req, res) {
@@ -91,31 +87,46 @@ app.get('/', function (req, res) {
     blobClient.listContainersSegmented(null, function (error, containers, results) {
         if (error) {
             // res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries});
-
             console.log(error);
             // res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries, currentContainer: containerName});
         } else {
 
-            res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries, currentContainer: containerName});
+            res.render('index.ejs', {
+                title: 'Aerial Insights - Folders Management',
+                serverContainers: containers.entries,
+                currentContainer: containerName
+            });
         }
     });
 
 
 });
 
-/// <<<<<<<<<<<=================  Last modification Here
+/// <<<<<<<<<<<=================  
 app.get('/Display', function (req, res) {
-    if (containerName.length>0){
+    if (containerName.length > 0) {
         blobClient.listBlobsSegmented(containerName, null, function (error, blobs, result) {
             if (blobs === null) {
                 helpers.renderError(res);
-                res.render('display.ejs', {title: 'List of Blobs', serverBlobs: null, currentContainer: containerName});
+                res.render('display.ejs', {
+                    title: 'Aerial Insights - Files Management',
+                    serverBlobs: null,
+                    currentContainer: containerName
+                });
             } else {
-                res.render('display.ejs', {title: 'List of Blobs', serverBlobs: blobs.entries, currentContainer: containerName});
+                res.render('display.ejs', {
+                    title: 'Aerial Insights - Files Management',
+                    serverBlobs: blobs.entries,
+                    currentContainer: containerName
+                });
             }
         });
-    }else{
-        res.render('display.ejs', {title: 'List of Blobs', serverBlobs: null, currentContainer: containerName});
+    } else {
+        res.render('display.ejs', {
+            title: 'Aerial Insights - Files Management',
+            serverBlobs: null,
+            currentContainer: containerName
+        });
     }
 });
 
@@ -209,7 +220,7 @@ app.post('/uploadhandler', function (req, res) {
 
 
 app.post('/DeleteContainer/:id', function (req, res) {
-    console.log("Container deleted: "+req.params.id);
+    console.log("Container deleted: " + req.params.id);
 
     blobClient.deleteContainerIfExists(req.params.id, function (error, result) {
         if (error) {
@@ -218,8 +229,8 @@ app.post('/DeleteContainer/:id', function (req, res) {
         } else {
             // alert('Delete ' + name + ' successfully!');
             //refreshContainer();
-            if (containerName===req.params.id){
-                containerName="";
+            if (containerName === req.params.id) {
+                containerName = "";
             }
             return res.redirect('/');
         }
@@ -228,7 +239,7 @@ app.post('/DeleteContainer/:id', function (req, res) {
 
 
 app.post('/Delete/:id', function (req, res) {
-    console.log("Blob deleted: "+req.params.id);
+    console.log("Blob deleted: " + req.params.id);
     blobClient.deleteBlob(containerName, req.params.id, function (error) {
         if (error != null) {
             helpers.renderError(res);
@@ -239,7 +250,7 @@ app.post('/Delete/:id', function (req, res) {
 });
 
 app.get('/SelectContainer/:name', function (req, res) {
-    console.log("Container selected: "+req.params.name);
+    console.log("Container selected: " + req.params.name);
     containerName = req.params.name;
     blobClient.listContainersSegmented(null, function (error, containers, results) {
         if (error) {
@@ -247,7 +258,11 @@ app.get('/SelectContainer/:name', function (req, res) {
             console.log(error);
         } else {
 
-            res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries, currentContainer: containerName});
+            res.render('index.ejs', {
+                title: 'List of containers',
+                serverContainers: containers.entries,
+                currentContainer: containerName
+            });
         }
     });
 });
@@ -262,8 +277,6 @@ app.get('/SelectContainer/:name', function (req, res) {
 // });
 
 
-
-
 function setPermissions(ctnName) {
     var options = {publicAccessLevel: azure.BlobUtilities.BlobContainerPublicAccessType.BLOB};
     blobClient.setContainerAcl(ctnName, null, options, function (error) {
@@ -273,7 +286,7 @@ function setPermissions(ctnName) {
     });
 }
 
-function refreshContainerList(){
+function refreshContainerList() {
 
 }
 

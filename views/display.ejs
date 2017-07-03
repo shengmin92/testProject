@@ -78,10 +78,10 @@
         <fieldset>
             <legend>Choose the files you want to upload</legend>
             <!--<ol>-->
-                <!--<li>-->
-                    <!--<span id="itemNameError" class="error"></span>-->
-                <!--</li>-->
-                <!--<input class="form-control-file" type="file" id="files" name="uploadedFile" multiple="multiple"/>-->
+            <!--<li>-->
+            <!--<span id="itemNameError" class="error"></span>-->
+            <!--</li>-->
+            <!--<input class="form-control-file" type="file" id="files" name="uploadedFile" multiple="multiple"/>-->
 
             <!--</ol>-->
 
@@ -94,7 +94,7 @@
 
 
     <br><br>
-    <h1 class="pageTitle">Files in <%= currentContainer%></h1>
+    <h1 class="pageTitle">Files in <%= currentContainer %></h1>
     <% if (serverBlobs.length > 0) { %>
     <table class="table table-hover">
         <tr>
@@ -102,34 +102,34 @@
             <th>Operations</th>
         </tr>
 
-    <% for (var i = 0; i < serverBlobs.length; i++) { %>
+        <% for (var i = 0; i < serverBlobs.length; i++) { %>
 
-    <tr>
-        <td><%= serverBlobs[i].name %></td>
+        <tr>
+            <td><%= serverBlobs[i].name %></td>
 
-        <td>
+            <td>
 
 
-            <!-- button for download -->
-            <a class="fa fa-download" href="/Download/<%= serverBlobs[i].name %>" ></a>
+                <!-- button for download -->
+                <a class="fa fa-download" href="/Download/<%= serverBlobs[i].name %>"></a>
 
-            <!-- button for delete -->
-            <a class="fa fa-trash" class="badge" data-toggle="modal"
-               data-target="#deleteBlobModal<%= i %>"></a>
+                <!-- button for delete -->
+                <a class="fa fa-trash" class="badge" data-toggle="modal"
+                   data-target="#deleteBlobModal<%= i %>"></a>
 
-            <!--&lt;!&ndash;button for preview&ndash;&gt;-->
-            <!--<a class="fa fa-eye" aria-hidden="true"></a>-->
+                <!--&lt;!&ndash;button for preview&ndash;&gt;-->
+                <!--<a class="fa fa-eye" aria-hidden="true"></a>-->
 
-        </td>
-    </tr>
+            </td>
+        </tr>
 
-    <!--<li class="blobItem">-->
+        <!--<li class="blobItem">-->
         <!--<form id="deleteBlobForm<%= i %>" action="/Delete/<%= serverBlobs[i].name %>" method="post"></form>-->
         <!--<div id="DeleteConfirmationDialog<%= i %>" class="jquery-dialog" title="Delete Blob">-->
-            <!--<span class="ui-icon ui-icon-alert ui-icon-float"></span>-->
-            <!--<p>Are you sure you want to delete <%= serverBlobs[i].name %>?</p>-->
+        <!--<span class="ui-icon ui-icon-alert ui-icon-float"></span>-->
+        <!--<p>Are you sure you want to delete <%= serverBlobs[i].name %>?</p>-->
         <!--</div>-->
-    <!--</li>-->
+        <!--</li>-->
 
 
         <!-- Modal -->
@@ -160,7 +160,7 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-    <% } %>
+        <% } %>
     </table>
     <% } else { %>
     <p>Nothing to see here. <a href="#files">Use the file uploader above to upload.</a></p>

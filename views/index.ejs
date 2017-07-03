@@ -78,7 +78,7 @@
 
             <% for (var i = 0; i < serverContainers.length; i++) { %>
             <tr class="clickable-row" id="<%= serverContainers[i].name %>">
-                <td><%= serverContainers[i].name %></td>
+                <td><i class="fa fa-folder-open-o" aria-hidden="true"></i><%= serverContainers[i].name %></td>
 
                 <td>
                     <% if (serverContainers[i].name === currentContainer){ %>
