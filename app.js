@@ -271,6 +271,10 @@ app.get('/SelectContainer/:name', function (req, res) {
     });
 });
 
+// app.get('/container_Contents',function(req, res){
+//     res.send
+// })
+
 
 // blobClient.createContainerIfNotExists(containerName, function (error) {
 //     if (error) {
@@ -289,6 +293,8 @@ function setPermissions(ctnName) {
         }
     });
 }
+
+
 
 function refreshContainerList() {
 

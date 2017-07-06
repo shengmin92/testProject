@@ -1,0 +1,81 @@
+<table class="table table-hover">
+    <tr>
+        <th>File Name</th>
+        <th>Upload Time</th>
+        <th>Operations</th>
+    </tr>
+
+    <% for (var i = 0; i < serverBlobs.length; i++) { %>
+
+    <tr>
+        <td><%= serverBlobs[i].name %></td>
+
+        <td><%= serverBlobs[i].lastModified %></td>
+
+        <td>
+            <!--button for preview-->
+            <a class="fa fa-eye" aria-hidden="true" class="badge" data-toggle="modal"
+               data-target="#previewModal<%= i %>"></a>
+
+            <!-- button for download -->
+            <a class="fa fa-download" href="/Download/<%= serverBlobs[i].name %>"></a>
+
+            <!-- button for delete -->
+            <a class="fa fa-trash" class="badge" data-toggle="modal"
+               data-target="#deleteBlobModal<%= i %>"></a>
+
+
+
+        </td>
+    </tr>
+
+
+    <!-- Modal for delete -->
+    <div class="modal fade" id="deleteBlobModal<%= i %>" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Delete File</h4>
+                </div>
+                <form id="deleteBlobForm<%= i %>" action="/Delete/<%= serverBlobs[i].name %>"
+                      method="post" enctype="multipart/form-data">
+                    <div class="form-group" id="DeleteBlobConfirmationDialog<%= i %>">
+
+                        <p class="modal-body text-center pagination-centered"> Are you
+                            sure you want to delete the file <%= serverBlobs[i].name %>?</p>
+                    </div>
+                </form>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="create-blob-button"
+                            onclick="javascript:deleteBlob('<%= i %>')">Delete
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- Modal for preview -->
+    <div class="modal fade" id="previewModal<%= i %>" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">File Preview</h4>
+                </div>
+
+                <div class="thumbnail">
+                    <img src="https://<%= azureAccount %>.blob.core.windows.net/<%= currentContainer %>/<%= serverBlobs[i].name %>" class="img-responsive" alt="Failed to load the file.">
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <% } %>
+</table>
