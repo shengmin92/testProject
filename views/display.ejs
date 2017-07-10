@@ -39,20 +39,29 @@
         }
     }
 
-    <!--var template = new EJS({url: '/container_contents.ejs'});-->
-    <!--$(function(){-->
-        <!--$('#switch_button').change(function(){-->
-            <!--if ($(this).prop('checked')){-->
-                <!--console.log("<%= azureAccount %>");-->
-                <!--$("#container_contents").html(template.render())-->
+    function getData() {
+        // Grab the template
+        $.get('/container_contents.ejs', function (template) {
+            // Compile the EJS template.
+            var func = ejs.compile(template);
 
-            <!--}else{-->
-                <!--console.log("<%= currentContainer %>");<%getContainerContent(true)%>;-->
-                <!--$("#container_contents").html(template.render())-->
-            <!--}-->
+            // Grab the data
+            $.get('/', function (data) {
+                // Generate the html from the given data.
+                var html = func(data);
+                $('#container_contents').html(html);
+            });
+        });
+    }
 
-        <!--})-->
-    <!--})-->
+    $(function() {
+        $('#switch_button').change(function() {
+           if ($(this).prop('checked')){
+               getData();
+           }
+        })
+    })
+
 
 
 </script>
@@ -273,14 +282,11 @@
 
             <% } %>
         </table>
-
-
         <%
         }
-
         }
 
-            getContainerContent(false);
+            getContainerContent(true);
         %>
 
 
@@ -290,6 +296,7 @@
     <% } else { %>
     <p>Nothing to see here. <a href="#files">Use the file uploader above to upload.</a></p>
     <% } %>
-    <% } %>
+    <% }
+    %>
 
 </section>

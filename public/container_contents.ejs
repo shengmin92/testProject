@@ -1,0 +1,12 @@
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+    </tr>
+    <% data.forEach(function (d) { %>
+    <tr>
+        <td><%- d.id %></td>
+        <td><%- d.name %></td>
+    </tr>
+    <% }); %>
+</table>

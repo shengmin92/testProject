@@ -215,7 +215,14 @@ app.post('/uploadhandler', function (req, res) {
                 }
                 else {
 
-                    if (i == filearray.length - 1) res.redirect('/Display');
+                    if (i == filearray.length - 1) {
+
+                        res.redirect('/Display');
+
+
+                    }
+
+
                 }
             });
         }
@@ -237,6 +244,11 @@ app.post('/DeleteContainer/:id', function (req, res) {
                 containerName = "";
             }
             return res.redirect('/');
+            // return res.render('index.ejs', {
+            //     title: 'Aerial Insights - Folders Management',
+            //     serverContainers: containers.entries,
+            //     currentContainer: containerName
+            // });
         }
     });
 });
@@ -271,9 +283,12 @@ app.get('/SelectContainer/:name', function (req, res) {
     });
 });
 
-// app.get('/container_Contents',function(req, res){
-//     res.send
-// })
+app.get('/',function(req, res){
+    res.send({ data: [
+        { id: 5, name: 'Bill' },
+        { id: 1, name: 'Bob' }
+    ]});
+})
 
 
 // blobClient.createContainerIfNotExists(containerName, function (error) {
@@ -283,6 +298,7 @@ app.get('/SelectContainer/:name', function (req, res) {
 //         setPermissions();
 //     }
 // });
+
 
 
 function setPermissions(ctnName) {
