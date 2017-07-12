@@ -39,29 +39,32 @@
         }
     }
 
-    function getData() {
-        // Grab the template
-        $.get('/container_contents.ejs', function (template) {
+    function getData(checkFlag) {
+//         Grab the template
+        console.log(checkFlag);
+        $.ajax({
+            type: 'post',
+            url: '/ContentViewFlag/'+checkFlag
+        });
+        $.get('container_contents.ejs', function (template) {
             // Compile the EJS template.
             var func = ejs.compile(template);
-
-            // Grab the data
-            $.get('/', function (data) {
+            $.get('/DisplayContents', function (title,serverBlobs,currentContainer,azureAccount,contentViewFlag) {
                 // Generate the html from the given data.
-                var html = func(data);
+
+                var html = func(title,serverBlobs,currentContainer,contentViewFlag);
                 $('#container_contents').html(html);
             });
         });
+
     }
 
-    $(function() {
-        $('#switch_button').change(function() {
-           if ($(this).prop('checked')){
-               getData();
-           }
+    $(function () {
+        $('#switch_button').change(function () {
+            getData($(this).prop('checked')); // $(this).prop('checked')
+
         })
     })
-
 
 
 </script>
@@ -81,7 +84,7 @@
         cursor: pointer;
     }
 
-    .thumbnail_title{
+    .thumbnail_title {
         width: 200px;
         white-space: nowrap;
         overflow: hidden;
@@ -110,14 +113,21 @@
             <legend>Choose the files you want to upload</legend>
             <span id="itemNameError" class="error"></span>
             <input class="form-control-file" type="file" id="files" name="uploadedFile" multiple="multiple"/><br>
-            <input type="button" class="submit btn-primary" value="Upload" title="Upload"
-                   onclick="javascript:submitForm()"/>
+            <button type="button" class="btn btn-primary"  title="Upload"
+                    onclick="javascript:submitForm()">Upload
+            </button>
         </fieldset>
     </form>
 
 
     <br><br>
     <h2 class="pageTitle">Files in <font face="Verdana" color="green"><%= currentContainer %></font></h2>
+
+    <% if (serverBlobs.length > 0) { %>
+
+    <!-- search box -->
+    <!-- end of search box -->
+
 
     <!-- switch button -->
     <div class="checkbox">
@@ -126,8 +136,6 @@
         </label>
     </div>
     <!-- end of switch button -->
-
-    <% if (serverBlobs.length > 0) { %>
 
     <div id="container_contents">
         <%
@@ -140,56 +148,69 @@
             <% for (var ii = 0; ii < tmpArray.length;ii++) { %>
             <div class="col-sm-6 col-md-3">
                 <div class="thumbnail">
-                    <div class="image_frame" data-toggle="modal" data-target="#previewModal<%= i+ii %>">
-                        <img src="https://<%= azureAccount %>.blob.core.windows.net/<%= currentContainer %>/<%= tmpArray[ii].name %>" class="img-responsive" alt="Failed to load the file."  />
+
+                    <div class="image_frame" data-toggle="modal" data-target="#previewModal<%= i + ii %>">
+                        <img src="https://<%= azureAccount %>.blob.core.windows.net/<%= currentContainer %>/<%= tmpArray[ii].name %>"
+                             class="img-responsive" alt="Failed to load the file."/>
                     </div>
 
                     <div class="caption">
-                        <h4 class="thumbnail_title" ><%= tmpArray[ii].name %></h4>
+                        <h4 class="thumbnail_title col-md-3"><%= (ii + i + 1) + ". " + tmpArray[ii].name %></h4>
 
                         <div class="clearfix">
-                            <a class="btn btn-default" href="/Download/<%= tmpArray[ii].name %>" role="button"> <i class="fa fa-download" aria-hidden="true"></i> Download </a>
-                            <a class="btn btn-primary" class="badge" data-toggle="modal" data-target="#deleteBlobModal<%= ii+i %>" role="button"><i class="fa fa-trash" aria-hidden="true"> </i> Delete</a>
+                            <a class="btn btn-default" href="/Download/<%= tmpArray[ii].name %>" role="button"> <i
+                                        class="fa fa-download" aria-hidden="true"></i> Download </a>
+                            <a class="btn btn-primary" class="badge" data-toggle="modal"
+                               data-target="#deleteBlobModal<%= ii + i %>" role="button"><i class="fa fa-trash"
+                                                                                            aria-hidden="true"> </i>
+                                Delete</a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Modal for delete -->
-            <div class="modal fade" id="deleteBlobModal<%= ii+i %>" tabindex="-1" role="dialog">
+            <div class="modal fade" id="deleteBlobModal<%= ii + i %>" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title">Delete File</h4>
                         </div>
-                        <form id="deleteBlobForm<%= ii+i %>" action="/Delete/<%= tmpArray[ii].name %>" method="post" enctype="multipart/form-data">
-                            <div class="form-group" id="DeleteBlobConfirmationDialog<%= ii+i %>">
+                        <form id="deleteBlobForm<%= ii + i %>" action="/Delete/<%= tmpArray[ii].name %>" method="post"
+                              enctype="multipart/form-data">
+                            <div class="form-group" id="DeleteBlobConfirmationDialog<%= ii + i %>">
 
-                                <p class="modal-body text-center pagination-centered"> Are you sure you want to delete the file <%= tmpArray[ii].name %>?</p>
+                                <p class="modal-body text-center pagination-centered"> Are you sure you want to delete
+                                    the file <%= tmpArray[ii].name %>?</p>
                             </div>
                         </form>
 
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="create-blob-button" onclick="javascript:deleteBlob('<%= ii+i %>')">Delete </button>
+                            <button type="button" class="btn btn-primary" id="create-blob-button"
+                                    onclick="javascript:deleteBlob('<%= ii + i %>')">Delete
+                            </button>
                         </div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
 
             <!-- Modal for preview -->
-            <div class="modal fade" id="previewModal<%= i+ii %>" tabindex="-1" role="dialog">
+            <div class="modal fade" id="previewModal<%= i + ii %>" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title"><%= tmpArray[ii].name %></h4>
                         </div>
 
                         <div class="thumbnail">
-                            <img src="https://<%= azureAccount %>.blob.core.windows.net/<%= currentContainer %>/<%= tmpArray[ii].name %>" class="img-responsive" alt="Failed to load the file.">
+                            <img src="https://<%= azureAccount %>.blob.core.windows.net/<%= currentContainer %>/<%= tmpArray[ii].name %>"
+                                 class="img-responsive" alt="Failed to load the file.">
                         </div>
 
                     </div><!-- /.modal-content -->
@@ -203,6 +224,7 @@
 
         <table class="table table-hover">
             <tr>
+                <th>No.</th>
                 <th>File Name</th>
                 <th>Upload Time</th>
                 <th>Operations</th>
@@ -211,6 +233,7 @@
             <% for (var i = 0; i < serverBlobs.length; i++) { %>
 
             <tr>
+                <th><%= (i + 1) %></th>
                 <td><%= serverBlobs[i].name %></td>
 
                 <td><%= serverBlobs[i].lastModified %></td>
@@ -226,7 +249,6 @@
                     <!-- button for delete -->
                     <a class="fa fa-trash" class="badge" data-toggle="modal"
                        data-target="#deleteBlobModal<%= i %>"></a>
-
 
 
                 </td>
@@ -273,7 +295,8 @@
                         </div>
 
                         <div class="thumbnail">
-                            <img src="https://<%= azureAccount %>.blob.core.windows.net/<%= currentContainer %>/<%= serverBlobs[i].name %>" class="img-responsive" alt="Failed to load the file.">
+                            <img src="https://<%= azureAccount %>.blob.core.windows.net/<%= currentContainer %>/<%= serverBlobs[i].name %>"
+                                 class="img-responsive" alt="Failed to load the file.">
                         </div>
 
                     </div><!-- /.modal-content -->
@@ -286,10 +309,8 @@
         }
         }
 
-            getContainerContent(true);
+            getContainerContent(contentViewFlag);
         %>
-
-
 
     </div><!-- end of container_contents -->
 

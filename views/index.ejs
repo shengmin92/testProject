@@ -1,10 +1,18 @@
+
 <script>
 
     function createNewContainer() {
-        if ($('#containerNameBox').val().length === 0) {
-            $('#containerNameError').html("You must provide a valid name!");
-        } else {
+//        if ($('#containerNameBox').val().length === 0) {
+//            $('#containerNameError').html("You must provide a valid name!");
+//        } else {
+//            document.forms['createConatinerForm'].submit();
+//        }
+
+        if (/^[a-z0-9](?!.*--)[a-z0-9-]{1,61}[a-z0-9]$/.test($('#containerNameBox').val())) {
             document.forms['createConatinerForm'].submit();
+
+        } else {
+            $('#containerNameError').html("You must provide a valid name!");
         }
     }
 
@@ -14,12 +22,10 @@
     }
 
     function chooseContainerName(containerName) {
-        <!--console.log(<%= currentContainer %>);-->
         $.ajax({
             type: 'get',
             url: '/SelectContainer/' + containerName
-//            data: {"containername": containerName}
-        })
+        });
         location.reload();
     }
 
@@ -45,8 +51,18 @@
                 <form id="createConatinerForm" action="/CreateContainer" method="post" enctype="multipart/form-data">
                     <div class="modal-body pagination-centered">
                         <label for="containerNameBox">What is the name of the new blob container?</label>
-                        <span id="containerNameError" class="error"></span>
+                        <span id="containerNameError" class="error"></span><br>
+
                         <input class="form-control" name="containerNameBox" id="containerNameBox"/>
+                        <div>
+                            <h5>A folder name MUST be a valid DNS name, conforming to the following naming rules:</h5>
+                            <ol>
+                                <li>Folder names must start with a letter (a-z) or number (0-9), and can contain only letters, numbers, and the dash (-) character.</li>
+                                <li>Every dash (-) character must be immediately preceded and followed by a letter or number; consecutive dashes are not permitted in folder names.</li>
+                                <li>All letters in a container name must be LOWERCASE.</li>
+                                <li>Folder names must be from 3 through 63 characters long.</li>
+                            </ol>
+                        </div>
                     </div>
                 </form>
 
@@ -78,26 +94,29 @@
 
             <% for (var i = 0; i < serverContainers.length; i++) { %>
             <tr class="clickable-row" id="<%= serverContainers[i].name %>">
+                <% if (serverContainers[i].name === currentContainer){ %>
                 <td><i class="fa fa-folder-open-o" aria-hidden="true"></i><%= serverContainers[i].name %></td>
-
                 <td>
-                    <% if (serverContainers[i].name === currentContainer){ %>
-                    <span style="cursor: pointer;width: 70px; background-color: #468847;" type="button" class="badge"
-                          onclick="javascript:chooseContainerName('<%= serverContainers[i].name %>')">
-                        Selected
-                    </span>
-                    <% }else{ %>
-                    <span style="cursor: pointer;width: 70px; background-color: #f89406;" type="button" class="badge"
-                          onclick="javascript:chooseContainerName('<%= serverContainers[i].name %>')">
-                        Select
-                    </span>
-                    <% } %>
-                    <% if (currentContainer.length !== ""){ %>
+            <span style="cursor: pointer;width: 70px; background-color: #468847;" type="button" class="badge"
+                  onclick="javascript:chooseContainerName('<%= serverContainers[i].name %>')">
+                    Selected
+            </span>
                     <span style="cursor: pointer;width: 70px;" type="button" class="badge" data-toggle="modal"
-                          data-target="#deleteContainerModal<%= i %>">Delete</span>
-                    <% } %>
-
+                          data-target="#deleteContainerModal<%= i %>">Delete
+            </span>
                 </td>
+                <% } else {%>
+                <td><i class="fa fa-folder-o" aria-hidden="true"></i></i><%= serverContainers[i].name %></td>
+                <td>
+            <span style="cursor: pointer;width: 70px; background-color: #f89406;" type="button" class="badge"
+                  onclick="javascript:chooseContainerName('<%= serverContainers[i].name %>')">
+                    Select
+            </span>
+                    <span style="cursor: pointer;width: 70px;" type="button" class="badge" data-toggle="modal"
+                          data-target="#deleteContainerModal<%= i %>">Delete
+            </span>
+                </td>
+                <% } %>
             </tr>
 
             <!-- Modal -->

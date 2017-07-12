@@ -31,6 +31,7 @@ var blobUri = "";
 // Global request options, set the retryPolicy
 var blobClient = azure.createBlobService(cs).withFilter(new azure.ExponentialRetryPolicyFilter());  // 之后删掉
 var containerName = ''; // = 'webpi'
+var content_view_flag = false;
 
 //Configuration
 app.set('views', path.join(__dirname + '/views'));
@@ -104,7 +105,7 @@ app.get('/', function (req, res) {
 
 /// <<<<<<<<<<<=================  
 app.get('/Display', function (req, res) {
-    if (containerName.length > 0) {
+    if ((/^[a-z0-9](?!.*--)[a-z0-9-]{1,61}[a-z0-9]$/.test(containerName))) {
         blobClient.listBlobsSegmented(containerName, null, function (error, blobs, result) {
             if (blobs === null) {
                 helpers.renderError(res);
@@ -112,16 +113,19 @@ app.get('/Display', function (req, res) {
                     title: 'Aerial Insights - Files Management',
                     serverBlobs: null,
                     currentContainer: containerName,
-                    azureAccount: account
+                    azureAccount: account,
+                    contentViewFlag: content_view_flag
                 });
             } else {
-                console.log(blobs.entries);
                 res.render('display.ejs', {
+
                     title: 'Aerial Insights - Files Management',
                     serverBlobs: blobs.entries,
                     currentContainer: containerName,
-                    azureAccount: account
+                    azureAccount: account,
+                    contentViewFlag: content_view_flag
                 });
+
             }
         });
     } else {
@@ -129,7 +133,8 @@ app.get('/Display', function (req, res) {
             title: 'Aerial Insights - Files Management',
             serverBlobs: null,
             currentContainer: containerName,
-            azureAccount: account
+            azureAccount: account,
+            contentViewFlag: content_view_flag
         });
     }
 });
@@ -152,7 +157,6 @@ app.get('/Download/:id', function (req, res) {
 
 app.post('/CreateContainer', function (req, res) {
     if (!blobClient) {
-        // res.redirect('/');
         return;
     }
     var form = new formidable.IncomingForm();
@@ -244,11 +248,6 @@ app.post('/DeleteContainer/:id', function (req, res) {
                 containerName = "";
             }
             return res.redirect('/');
-            // return res.render('index.ejs', {
-            //     title: 'Aerial Insights - Folders Management',
-            //     serverContainers: containers.entries,
-            //     currentContainer: containerName
-            // });
         }
     });
 });
@@ -263,6 +262,11 @@ app.post('/Delete/:id', function (req, res) {
             res.redirect('/Display');
         }
     });
+});
+
+app.post('/ContentViewFlag/:flag', function (req, res) {
+    console.log("Container Content View Changed: "+(req.params.flag));
+    content_view_flag = (req.params.flag==="true");
 });
 
 app.get('/SelectContainer/:name', function (req, res) {
@@ -283,22 +287,44 @@ app.get('/SelectContainer/:name', function (req, res) {
     });
 });
 
-app.get('/',function(req, res){
-    res.send({ data: [
-        { id: 5, name: 'Bill' },
-        { id: 1, name: 'Bob' }
-    ]});
-})
 
 
-// blobClient.createContainerIfNotExists(containerName, function (error) {
-//     if (error) {
-//         console.log(error);
-//     } else {
-//         setPermissions();
-//     }
-// });
+app.get('/DisplayContents', function (req, res) {
+    if ((/^[a-z0-9](?!.*--)[a-z0-9-]{1,61}[a-z0-9]$/.test(containerName))) {
+        blobClient.listBlobsSegmented(containerName, null, function (error, blobs, result) {
+            if (blobs === null) {
+                helpers.renderError(res);
+                res.send({
+                    // data: {
+                    serverBlobs: null,
+                    currentContainer: containerName,
+                    azureAccount: account,
+                    contentViewFlag: content_view_flag
+                    // }
+                });
 
+            } else {
+                res.send({
+                    // data: {
+                    serverBlobs: blobs.entries,
+                    currentContainer: containerName,
+                    azureAccount: account,
+                    contentViewFlag: content_view_flag
+                    // }
+                });
+            }
+        });
+    } else {
+        res.send({
+            // data: {
+            serverBlobs: null,
+            currentContainer: containerName,
+            azureAccount: account,
+            contentViewFlag: content_view_flag
+            // }
+        });
+    }
+});
 
 
 function setPermissions(ctnName) {
@@ -311,9 +337,8 @@ function setPermissions(ctnName) {
 }
 
 
-
-function refreshContainerList() {
-
-}
+// function refreshContainerList() {
+//
+// }
 
 module.exports = app;
