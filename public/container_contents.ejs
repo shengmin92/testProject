@@ -1,8 +1,8 @@
 <%
 getContainerContent = function(ccflag) {
 if (ccflag){
-for (var i = 0, tmpArray, chunk = 4; i < serverBlobs.length; i += chunk) {
-    tmpArray = serverBlobs.slice(i, i + chunk);
+for (var i = 0, tmpArray, chunk = 4; i < data.serverBlobs.length; i += chunk) {
+    tmpArray = data.serverBlobs.slice(i, i + chunk);
 %>
 <div class="row">
     <% for (var ii = 0; ii < tmpArray.length;ii++) { %>
@@ -10,7 +10,7 @@ for (var i = 0, tmpArray, chunk = 4; i < serverBlobs.length; i += chunk) {
         <div class="thumbnail">
 
             <div class="image_frame" data-toggle="modal" data-target="#previewModal<%= i + ii %>">
-                <img src="https://<%= azureAccount %>.blob.core.windows.net/<%= currentContainer %>/<%= tmpArray[ii].name %>"
+                <img src="https://<%= data.azureAccount %>.blob.core.windows.net/<%= data.currentContainer %>/<%= tmpArray[ii].name %>"
                      class="img-responsive" alt="Failed to load the file."/>
             </div>
 
@@ -69,7 +69,7 @@ for (var i = 0, tmpArray, chunk = 4; i < serverBlobs.length; i += chunk) {
                 </div>
 
                 <div class="thumbnail">
-                    <img src="https://<%= azureAccount %>.blob.core.windows.net/<%= currentContainer %>/<%= tmpArray[ii].name %>"
+                    <img src="https://<%= data.azureAccount %>.blob.core.windows.net/<%= data.currentContainer %>/<%= tmpArray[ii].name %>"
                          class="img-responsive" alt="Failed to load the file.">
                 </div>
 
@@ -90,13 +90,13 @@ for (var i = 0, tmpArray, chunk = 4; i < serverBlobs.length; i += chunk) {
         <th>Operations</th>
     </tr>
 
-    <% for (var i = 0; i < serverBlobs.length; i++) { %>
+    <% for (var i = 0; i < data.serverBlobs.length; i++) { %>
 
     <tr>
         <th><%= (i + 1) %></th>
-        <td><%= serverBlobs[i].name %></td>
+        <td><%= data.serverBlobs[i].name %></td>
 
-        <td><%= serverBlobs[i].lastModified %></td>
+        <td><%= data.serverBlobs[i].lastModified %></td>
 
         <td>
             <!--button for preview-->
@@ -104,7 +104,7 @@ for (var i = 0, tmpArray, chunk = 4; i < serverBlobs.length; i += chunk) {
                data-target="#previewModal<%= i %>"></a>
 
             <!-- button for download -->
-            <a class="fa fa-download" href="/Download/<%= serverBlobs[i].name %>"></a>
+            <a class="fa fa-download" href="/Download/<%= data.serverBlobs[i].name %>"></a>
 
             <!-- button for delete -->
             <a class="fa fa-trash" class="badge" data-toggle="modal"
@@ -124,12 +124,12 @@ for (var i = 0, tmpArray, chunk = 4; i < serverBlobs.length; i += chunk) {
                                 aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Delete File</h4>
                 </div>
-                <form id="deleteBlobForm<%= i %>" action="/Delete/<%= serverBlobs[i].name %>"
+                <form id="deleteBlobForm<%= i %>" action="/Delete/<%= data.serverBlobs[i].name %>"
                       method="post" enctype="multipart/form-data">
                     <div class="form-group" id="DeleteBlobConfirmationDialog<%= i %>">
 
                         <p class="modal-body text-center pagination-centered"> Are you
-                            sure you want to delete the file <%= serverBlobs[i].name %>?</p>
+                            sure you want to delete the file <%= data.serverBlobs[i].name %>?</p>
                     </div>
                 </form>
 
@@ -155,7 +155,7 @@ for (var i = 0, tmpArray, chunk = 4; i < serverBlobs.length; i += chunk) {
                 </div>
 
                 <div class="thumbnail">
-                    <img src="https://<%= azureAccount %>.blob.core.windows.net/<%= currentContainer %>/<%= serverBlobs[i].name %>"
+                    <img src="https://<%= data.azureAccount %>.blob.core.windows.net/<%= data.currentContainer %>/<%= data.serverBlobs[i].name %>"
                          class="img-responsive" alt="Failed to load the file.">
                 </div>
 
@@ -169,5 +169,5 @@ for (var i = 0, tmpArray, chunk = 4; i < serverBlobs.length; i += chunk) {
 }
 }
 
-getContainerContent(contentViewFlag);
+getContainerContent(data.contentViewFlag);
 %>

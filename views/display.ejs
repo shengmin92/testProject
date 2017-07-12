@@ -42,6 +42,7 @@
     function getData(checkFlag) {
 //         Grab the template
         console.log(checkFlag);
+
         $.ajax({
             type: 'post',
             url: '/ContentViewFlag/'+checkFlag
@@ -49,13 +50,15 @@
         $.get('container_contents.ejs', function (template) {
             // Compile the EJS template.
             var func = ejs.compile(template);
-            $.get('/DisplayContents', function (title,serverBlobs,currentContainer,azureAccount,contentViewFlag) {
+            console.log(checkFlag+" in progress");
+            $.get('/DisplayContents', function (data) {
+                // serverBlobs,currentContainer,azureAccount,contentViewFlag
                 // Generate the html from the given data.
-
-                var html = func(title,serverBlobs,currentContainer,contentViewFlag);
+                var html = func(data);
                 $('#container_contents').html(html);
             });
         });
+        console.log(checkFlag+" done");
 
     }
 

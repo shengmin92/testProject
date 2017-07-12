@@ -91,7 +91,6 @@ app.get('/', function (req, res) {
             console.log(error);
             // res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries, currentContainer: containerName});
         } else {
-
             res.render('index.ejs', {
                 title: 'Aerial Insights - Folders Management',
                 serverContainers: containers.entries,
@@ -99,8 +98,6 @@ app.get('/', function (req, res) {
             });
         }
     });
-
-
 });
 
 /// <<<<<<<<<<<=================  
@@ -125,7 +122,6 @@ app.get('/Display', function (req, res) {
                     azureAccount: account,
                     contentViewFlag: content_view_flag
                 });
-
             }
         });
     } else {
@@ -150,10 +146,7 @@ app.get('/Download/:id', function (req, res) {
             helpers.renderError(res);
         }
     });
-
-
 });
-
 
 app.post('/CreateContainer', function (req, res) {
     if (!blobClient) {
@@ -172,23 +165,17 @@ app.post('/CreateContainer', function (req, res) {
             }
         });
     });
-
-
 });
-
 
 app.post('/uploadhandler', function (req, res) {
     var form = new formidable.IncomingForm();
     form.multiples = true;
-
-
     form.parse(req, function (err, fields, files) {
         var errorflag = false;
         var filearray = [];
         var finished = false;
         if (files.uploadedFile.length === undefined) {
             filearray = [files.uploadedFile];
-
         }
         else {
             filearray = files.uploadedFile;
@@ -196,10 +183,8 @@ app.post('/uploadhandler', function (req, res) {
         //////////////////////////////////////
         var options;
         var blockSize;
-
         var speedSummary;
         for (var i = 0; i < filearray.length; i++) {
-
             blockSize = filearray[i].size > 1024 * 1024 * 32 ? 1024 * 1024 * 4 : 1024 * 512;
             finished = false;
             options = {
@@ -207,32 +192,22 @@ app.post('/uploadhandler', function (req, res) {
                 metadata: {fileName: filearray[i].name},
                 blockSize: blockSize
             };
-
             blobClient.singleBlobPutThresholdInBytes = blockSize;
-
             speedSummary = blobClient.createBlockBlobFromLocalFile(containerName, filearray[i].name, filearray[i].path, options, function (error) {
-
                 if (error) {
                     console.log(error);
                     helpers.renderError(res);
                     errorflag = true;
                 }
                 else {
-
                     if (i == filearray.length - 1) {
-
                         res.redirect('/Display');
-
-
                     }
-
-
                 }
             });
         }
     });
 });
-
 
 app.post('/DeleteContainer/:id', function (req, res) {
     console.log("Container deleted: " + req.params.id);
@@ -264,9 +239,10 @@ app.post('/Delete/:id', function (req, res) {
     });
 });
 
-app.post('/ContentViewFlag/:flag', function (req, res) {
-    console.log("Container Content View Changed: "+(req.params.flag));
-    content_view_flag = (req.params.flag==="true");
+app.post('/ContentViewFlag/:flag', function (req,res) {
+    console.log("Container Content View Changed: " + (req.params.flag));
+    content_view_flag = (req.params.flag === "true");
+    res.send();
 });
 
 app.get('/DisplayContainerList', function (req, res) {
@@ -286,8 +262,6 @@ app.get('/DisplayContainerList', function (req, res) {
     });
 });
 
-
-
 app.get('/SelectContainer/:name', function (req, res) {
     console.log("Container selected: " + req.params.name);
     containerName = req.params.name;
@@ -306,45 +280,41 @@ app.get('/SelectContainer/:name', function (req, res) {
     });
 });
 
-
-
 app.get('/DisplayContents', function (req, res) {
     if ((/^[a-z0-9](?!.*--)[a-z0-9-]{1,61}[a-z0-9]$/.test(containerName))) {
         blobClient.listBlobsSegmented(containerName, null, function (error, blobs, result) {
             if (blobs === null) {
                 helpers.renderError(res);
                 res.send({
-                    // data: {
-                    serverBlobs: null,
-                    currentContainer: containerName,
-                    azureAccount: account,
-                    contentViewFlag: content_view_flag
-                    // }
+                    data: {
+                        serverBlobs: null,
+                        currentContainer: containerName,
+                        azureAccount: account,
+                        contentViewFlag: content_view_flag
+                    }
                 });
-
             } else {
                 res.send({
-                    // data: {
-                    serverBlobs: blobs.entries,
-                    currentContainer: containerName,
-                    azureAccount: account,
-                    contentViewFlag: content_view_flag
-                    // }
+                    data: {
+                        serverBlobs: blobs.entries,
+                        currentContainer: containerName,
+                        azureAccount: account,
+                        contentViewFlag: content_view_flag
+                    }
                 });
             }
         });
     } else {
         res.send({
-            // data: {
-            serverBlobs: null,
-            currentContainer: containerName,
-            azureAccount: account,
-            contentViewFlag: content_view_flag
-            // }
+            data: {
+                serverBlobs: null,
+                currentContainer: containerName,
+                azureAccount: account,
+                contentViewFlag: content_view_flag
+            }
         });
     }
 });
-
 
 function setPermissions(ctnName) {
     var options = {publicAccessLevel: azure.BlobUtilities.BlobContainerPublicAccessType.BLOB};
