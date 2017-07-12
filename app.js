@@ -269,6 +269,25 @@ app.post('/ContentViewFlag/:flag', function (req, res) {
     content_view_flag = (req.params.flag==="true");
 });
 
+app.get('/DisplayContainerList', function (req, res) {
+    blobClient.listContainersSegmented(null, function (error, containers, results) {
+        if (error) {
+            // res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries});
+            console.log(error);
+            // res.render('index.ejs', {title: 'List of containers', serverContainers: containers.entries, currentContainer: containerName});
+        } else {
+
+            res.send({
+                title: 'Aerial Insights - Folders Management',
+                serverContainers: containers.entries,
+                currentContainer: containerName
+            });
+        }
+    });
+});
+
+
+
 app.get('/SelectContainer/:name', function (req, res) {
     console.log("Container selected: " + req.params.name);
     containerName = req.params.name;

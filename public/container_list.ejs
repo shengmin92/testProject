@@ -1,0 +1,74 @@
+<table class="table table-hover">
+    <tr>
+        <th>Folder Name</th>
+        <!--<th>Upload Time</th>-->
+        <th>Operations</th>
+    </tr>
+    <% if (serverContainers.length > 0) { %>
+
+    <% for (var i = 0; i < serverContainers.length; i++) { %>
+    <tr class="clickable-row" id="<%= serverContainers[i].name %>">
+        <% if (serverContainers[i].name === currentContainer){ %>
+        <td><i class="fa fa-folder-open-o" aria-hidden="true"></i><%= serverContainers[i].name %></td>
+        <td>
+            <span style="cursor: pointer;width: 70px; background-color: #468847;" type="button" class="badge"
+                  onclick="javascript:chooseContainerName('<%= serverContainers[i].name %>')">
+                    Selected
+            </span>
+            <span style="cursor: pointer;width: 70px;" type="button" class="badge" data-toggle="modal"
+                  data-target="#deleteContainerModal<%= i %>">Delete
+            </span>
+        </td>
+        <% } else { %>
+        <td><i class="fa fa-folder-o" aria-hidden="true"></i></i><%= serverContainers[i].name %></td>
+        <td>
+            <span style="cursor: pointer;width: 70px; background-color: #f89406;" type="button" class="badge"
+                  onclick="javascript:chooseContainerName('<%= serverContainers[i].name %>')">
+                    Select
+            </span>
+            <span style="cursor: pointer;width: 70px;" type="button" class="badge" data-toggle="modal"
+                  data-target="#deleteContainerModal<%= i %>">Delete
+            </span>
+        </td>
+        <% } %>
+    </tr>
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteContainerModal<%= i %>" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Delete Container</h4>
+                </div>
+                <form id="deleteConatinerForm<%= i %>" action="/DeleteContainer/<%= serverContainers[i].name %>"
+                      method="post" enctype="multipart/form-data">
+                    <div class="form-group" id="DeleteContainerConfirmationDialog<%= i %>">
+
+                        <p class="modal-body text-center pagination-centered"> Are you
+                            sure you want to delete the container <%= serverContainers[i].name %>?</p>
+                    </div>
+                </form>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="create-container-button"
+                            onclick="javascript:deleteContainer('<%= i %>')">Delete
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <% } %>
+
+    <% } else { %>
+    <tr>
+        <td>Currently no existing container...</td>
+        <!--<td></td>-->
+        <td></td>
+    </tr>
+    <% } %>
+</table>

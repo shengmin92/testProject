@@ -132,7 +132,7 @@
     <!-- switch button -->
     <div class="checkbox">
         <label>
-            <input id="switch_button" type="checkbox" data-toggle="toggle" data-on="Card View" data-off="List View">
+            <input id="switch_button" type="checkbox" <% if (contentViewFlag) {%>checked<%}%> data-toggle="toggle" data-on="Card View" data-off="List View" aria-pressed="pressed">
         </label>
     </div>
     <!-- end of switch button -->

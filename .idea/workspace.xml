@@ -2,16 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ed9e18d8-260c-4aff-902e-8489bae7ee2c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/ejs.min.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/views/container_contents.ejs" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/container_list.ejs" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/public/data.ejs" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/views/container_contents.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/views/containercontents.ejs" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/node_modules/ejs/package.json" afterPath="$PROJECT_DIR$/node_modules/ejs/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/container_contents.ejs" afterPath="$PROJECT_DIR$/public/container_contents.ejs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/display.ejs" afterPath="$PROJECT_DIR$/views/display.ejs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/index.ejs" afterPath="$PROJECT_DIR$/views/index.ejs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/layout.ejs" afterPath="$PROJECT_DIR$/views/layout.ejs" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -38,8 +36,8 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1336">
-              <caret line="127" column="0" lean-forward="true" selection-start-line="127" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
+            <state relative-caret-position="228">
+              <caret line="273" column="20" lean-forward="true" selection-start-line="273" selection-start-column="20" selection-end-line="273" selection-end-column="20" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -47,41 +45,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="display.ejs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/display.ejs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="44" column="16" lean-forward="true" selection-start-line="44" selection-start-column="16" selection-end-line="44" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="index.ejs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/index.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="27" column="11" lean-forward="true" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
+            <state relative-caret-position="327">
+              <caret line="32" column="40" lean-forward="true" selection-start-line="32" selection-start-column="20" selection-end-line="32" selection-end-column="40" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="layout.ejs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/layout.ejs">
+      <file leaf-file-name="display.ejs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/views/display.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" column="19" lean-forward="true" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="container_contents.ejs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/container_contents.ejs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="167" column="2" lean-forward="true" selection-start-line="167" selection-start-column="2" selection-end-line="167" selection-end-column="2" />
+            <state relative-caret-position="154">
+              <caret line="44" column="16" lean-forward="true" selection-start-line="44" selection-start-column="16" selection-end-line="44" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -91,7 +69,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>createServer</find>
       <find>para</find>
       <find>table</find>
       <find>CreateContainer</find>
@@ -116,11 +93,12 @@
       <find>console</find>
       <find>ii+i+1</find>
       <find>azureAccount</find>
-      <find>if</find>
       <find>Card</find>
       <find>img</find>
-      <find>PublicAcces</find>
+      <find>if</find>
       <find>getData</find>
+      <find>containerList</find>
+      <find>PublicAcces</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -138,8 +116,9 @@
         <option value="$PROJECT_DIR$/public/container_contents.html" />
         <option value="$PROJECT_DIR$/views/layout.ejs" />
         <option value="$PROJECT_DIR$/public/container_contents.ejs" />
-        <option value="$PROJECT_DIR$/views/index.ejs" />
         <option value="$PROJECT_DIR$/views/display.ejs" />
+        <option value="$PROJECT_DIR$/public/container_list.ejs" />
+        <option value="$PROJECT_DIR$/views/index.ejs" />
         <option value="$PROJECT_DIR$/app.js" />
       </list>
     </option>
@@ -392,12 +371,12 @@
       <workItem from="1498837357775" duration="1480000" />
       <workItem from="1499093025073" duration="751000" />
       <workItem from="1499099495800" duration="36592000" />
-      <workItem from="1499696276655" duration="37086000" />
+      <workItem from="1499696276655" duration="39413000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="213269000" />
+    <option name="totallyTimeSpent" value="215596000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -446,14 +425,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/views/display.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1440">
-          <caret line="96" column="35" lean-forward="false" selection-start-line="96" selection-start-column="35" selection-end-line="96" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/css/default.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4860">
@@ -791,7 +762,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/container_contents.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
+        <state relative-caret-position="2505">
           <caret line="167" column="2" lean-forward="true" selection-start-line="167" selection-start-column="2" selection-end-line="167" selection-end-column="2" />
           <folding />
         </state>
@@ -799,32 +770,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/layout.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="19" lean-forward="true" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
+        <state relative-caret-position="360">
+          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/index.ejs">
+    <entry file="file://$PROJECT_DIR$/public/container_list.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="11" lean-forward="true" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
+        <state relative-caret-position="1095">
+          <caret line="73" column="8" lean-forward="false" selection-start-line="73" selection-start-column="8" selection-end-line="73" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/views/display.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
+        <state relative-caret-position="154">
           <caret line="44" column="16" lean-forward="true" selection-start-line="44" selection-start-column="16" selection-end-line="44" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/index.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="327">
+          <caret line="32" column="40" lean-forward="true" selection-start-line="32" selection-start-column="20" selection-end-line="32" selection-end-column="40" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1336">
-          <caret line="127" column="0" lean-forward="true" selection-start-line="127" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
+        <state relative-caret-position="228">
+          <caret line="273" column="20" lean-forward="true" selection-start-line="273" selection-start-column="20" selection-end-line="273" selection-end-column="20" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
