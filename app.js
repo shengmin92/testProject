@@ -21,6 +21,9 @@ var path = require('path');
 var azure = require('azure-storage');
 var formidable = require('formidable');
 var helpers = require('./helpers.js');
+////////////////////////////////////////
+var exif = require('exiftool');
+var fs = require('fs');
 
 var app = express();
 var account = nconf.get("STORAGE_NAME");
@@ -184,6 +187,17 @@ app.post('/uploadhandler', function (req, res) {
         var options;
         var blockSize;
         var speedSummary;
+
+        var tmpLength;
+        var tmpPath;
+        var tmpName;
+        var tmpURL;
+
+        var jsonStr = '{"FileInfo":[]}';
+        var obj1 = JSON.parse(jsonStr);
+        var processes = [];
+
+
         for (var i = 0; i < filearray.length; i++) {
             blockSize = filearray[i].size > 1024 * 1024 * 32 ? 1024 * 1024 * 4 : 1024 * 512;
             finished = false;
@@ -193,6 +207,12 @@ app.post('/uploadhandler', function (req, res) {
                 blockSize: blockSize
             };
             blobClient.singleBlobPutThresholdInBytes = blockSize;
+
+            tmpPath = filearray[i].path;
+            tmpName = filearray[i].name;
+            tmpURL = "https://" + account + ".blob.core.windows.net/" + containerName + "/" + tmpName;
+            tmpLength = filearray.length;
+
             speedSummary = blobClient.createBlockBlobFromLocalFile(containerName, filearray[i].name, filearray[i].path, options, function (error) {
                 if (error) {
                     console.log(error);
@@ -200,6 +220,31 @@ app.post('/uploadhandler', function (req, res) {
                     errorflag = true;
                 }
                 else {
+                    fs.readFile(tmpPath, function (err, data) {
+                        if (err) {
+                            console.log("======== fs.readFile error =========");
+                            console.log(err);
+                        }
+                        else {
+                            exif.metadata(data, function (err, metadata) {
+                                if (err) {
+                                    console.log("========= exif.metadata error =========");
+                                    console.log(err);
+                                }
+                                else {
+                                    // console.log(metadata['gpsLatitude']);
+                                    obj1['FileInfo'].push({
+                                        "file name": tmpName,
+                                        "Latitude": metadata['gpsLatitude'],
+                                        "Longitude": metadata['gpsLongitude'],
+                                        "URL": tmpURL
+                                    });
+                                    console.log(JSON.stringify(obj1));
+                                }
+                            });
+                        }
+                    });
+
                     if (i == filearray.length - 1) {
                         res.redirect('/Display');
                     }
