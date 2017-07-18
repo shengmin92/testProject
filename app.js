@@ -55,37 +55,10 @@ app.param('id', function (req, res, next) {
     next();
 });
 
-///////////////////////////////////////////////////////
-// function checkIdentity(){
-//     account = nconf.get("STORAGE_NAME");
-//     cs = nconf.get("CONNECTION_STRING");
-//
-//     if (account == null || account.length < 1) {
-//         console.log('Please enter a valid storage account name!');
-//         return false;
-//     }
-//     if (cs == null || sas.length < 1) {
-//         console.log('Please enter a valid SAS Token!');
-//         return false;
-//     }
-//
-//     return true;
-// }
-//
-// function getBlobClient(){
-//     if (!checkIdentity()){
-//         return null;
-//     }
-//
-//     blobUri = 'https://' + account + '.blob.core.windows.net';
-//     var blobClient = azure.createBlobService(cs).withFilter(new azure.ExponentialRetryPolicyFilter());
-//     return blobClient;
-// }
-///////////////////////////////////////////////////////////////////////
-
 
 //Routes
 
+// Route to the "Folders" page
 app.get('/', function (req, res) {
     //
     blobClient.listContainersSegmented(null, function (error, containers, results) {
@@ -103,7 +76,7 @@ app.get('/', function (req, res) {
     });
 });
 
-/// <<<<<<<<<<<=================  
+// Route to the "Files" page
 app.get('/Display', function (req, res) {
     if ((/^[a-z0-9](?!.*--)[a-z0-9-]{1,61}[a-z0-9]$/.test(containerName))) {
         blobClient.listBlobsSegmented(containerName, null, function (error, blobs, result) {
@@ -138,6 +111,7 @@ app.get('/Display', function (req, res) {
     }
 });
 
+// Route for blob(image) download function
 app.get('/Download/:id', function (req, res) {
     blobClient.getBlobProperties(containerName, req.params.id, function (err, blobInfo) {
         if (err === null) {
@@ -151,6 +125,7 @@ app.get('/Download/:id', function (req, res) {
     });
 });
 
+// Route for the function of creating new blob container(folder)
 app.post('/CreateContainer', function (req, res) {
     if (!blobClient) {
         return;
@@ -170,6 +145,7 @@ app.post('/CreateContainer', function (req, res) {
     });
 });
 
+// Route for handling the uploaded blobs (images)
 app.post('/uploadhandler', function (req, res) {
     var form = new formidable.IncomingForm();
     form.multiples = true;
@@ -254,6 +230,7 @@ app.post('/uploadhandler', function (req, res) {
     });
 });
 
+// Route for deleting an existing container (folder)
 app.post('/DeleteContainer/:id', function (req, res) {
     console.log("Container deleted: " + req.params.id);
 
@@ -272,7 +249,7 @@ app.post('/DeleteContainer/:id', function (req, res) {
     });
 });
 
-
+// Route for deleting an existing blob (image)
 app.post('/Delete/:id', function (req, res) {
     console.log("Blob deleted: " + req.params.id);
     blobClient.deleteBlob(containerName, req.params.id, function (error) {
@@ -284,12 +261,14 @@ app.post('/Delete/:id', function (req, res) {
     });
 });
 
+// Route for updating the status of container content view flag, "true" indicates card view, "false" indicates list view
 app.post('/ContentViewFlag/:flag', function (req,res) {
     console.log("Container Content View Changed: " + (req.params.flag));
     content_view_flag = (req.params.flag === "true");
     res.send();
 });
 
+// Route for injecting the template of the section of container content list (card/list view)
 app.get('/DisplayContainerList', function (req, res) {
     blobClient.listContainersSegmented(null, function (error, containers, results) {
         if (error) {
@@ -307,6 +286,8 @@ app.get('/DisplayContainerList', function (req, res) {
     });
 });
 
+//
+// route for the function of selecting the container on "Folders" page
 app.get('/SelectContainer/:name', function (req, res) {
     console.log("Container selected: " + req.params.name);
     containerName = req.params.name;
