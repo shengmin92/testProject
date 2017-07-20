@@ -30,6 +30,9 @@ var account = nconf.get("STORAGE_NAME");
 var cs = nconf.get("CONNECTION_STRING");
 var blobUri = "";
 
+var MongoClient = require('mongodb').MongoClient;
+var uri = "mongodb://shengmin:shengmin@testcluster-shard-00-00-nwd5k.mongodb.net:27017,testcluster-shard-00-01-nwd5k.mongodb.net:27017,testcluster-shard-00-02-nwd5k.mongodb.net:27017/shengmin?ssl=true&replicaSet=TestCluster-shard-0&authSource=admin";
+var loopflag=false;
 
 // Global request options, set the retryPolicy
 var blobClient = azure.createBlobService(cs).withFilter(new azure.ExponentialRetryPolicyFilter());  // 之后删掉
@@ -148,6 +151,7 @@ app.post('/CreateContainer', function (req, res) {
 // Route for handling the uploaded blobs (images)
 app.post('/uploadhandler', function (req, res) {
     var form = new formidable.IncomingForm();
+
     form.multiples = true;
     form.parse(req, function (err, fields, files) {
         var errorflag = false;
@@ -162,7 +166,8 @@ app.post('/uploadhandler', function (req, res) {
         //////////////////////////////////////
         var options;
         var blockSize;
-        var speedSummary;
+        // var speedSummary;
+        // var testtmp;
 
         var tmpLength;
         var tmpPath;
@@ -172,7 +177,6 @@ app.post('/uploadhandler', function (req, res) {
         var jsonStr = '{"FileInfo":[]}';
         var obj1 = JSON.parse(jsonStr);
         var processes = [];
-
 
         for (var i = 0; i < filearray.length; i++) {
             blockSize = filearray[i].size > 1024 * 1024 * 32 ? 1024 * 1024 * 4 : 1024 * 512;
@@ -189,43 +193,60 @@ app.post('/uploadhandler', function (req, res) {
             tmpURL = "https://" + account + ".blob.core.windows.net/" + containerName + "/" + tmpName;
             tmpLength = filearray.length;
 
-            speedSummary = blobClient.createBlockBlobFromLocalFile(containerName, filearray[i].name, filearray[i].path, options, function (error) {
-                if (error) {
-                    console.log(error);
-                    helpers.renderError(res);
-                    errorflag = true;
-                }
-                else {
-                    fs.readFile(tmpPath, function (err, data) {
-                        if (err) {
-                            console.log("======== fs.readFile error =========");
-                            console.log(err);
-                        }
-                        else {
-                            exif.metadata(data, function (err, metadata) {
-                                if (err) {
-                                    console.log("========= exif.metadata error =========");
-                                    console.log(err);
-                                }
-                                else {
-                                    // console.log(metadata['gpsLatitude']);
-                                    obj1['FileInfo'].push({
-                                        "file name": tmpName,
-                                        "Latitude": metadata['gpsLatitude'],
-                                        "Longitude": metadata['gpsLongitude'],
-                                        "URL": tmpURL
-                                    });
-                                    console.log(JSON.stringify(obj1));
-                                }
-                            });
-                        }
-                    });
-
-                    if (i == filearray.length - 1) {
-                        res.redirect('/Display');
+            (function(i,tmpPath,tmpName,tmpURL,tmpLength){
+                blobClient.createBlockBlobFromLocalFile(containerName, filearray[i].name, filearray[i].path, options, function (error) {
+                    if (error) {
+                        console.log(error);
+                        helpers.renderError(res);
+                        errorflag = true;
                     }
-                }
-            });
+                    else {
+                        fs.readFile(tmpPath, function (err, data) {
+                            // console.log(data);
+                            if (err) {
+                                console.log("======== fs.readFile error =========");
+                                console.log(err);
+                            }
+                            else {
+                                exif.metadata(data, function (err, metadata) {
+                                    if (err) {
+                                        console.log("========= exif.metadata error =========");
+                                        console.log(err);
+                                    }
+                                    else {
+                                        console.log("Contents to MongoDB:");
+                                        console.log(JSON.stringify({
+                                            "file name": tmpName,
+                                            "Latitude": metadata['gpsLatitude'],
+                                            "Longitude": metadata['gpsLongitude'],
+                                            "URL": tmpURL
+                                        }));
+
+                                        MongoClient.connect(uri, function (err, db) {
+                                            // Paste the following examples here
+                                            db.collection(containerName).insertMany([
+                                                // MongoDB adds the _id field with an ObjectId if _id is not present
+                                                {
+                                                    "file name": tmpName,
+                                                    "Latitude": metadata['gpsLatitude'],
+                                                    "Longitude": metadata['gpsLongitude'],
+                                                    "URL": tmpURL
+                                                }
+                                            ]).then(function (result) {
+                                                // process result
+                                                if (i == tmpLength - 1) {
+                                                    res.redirect('/Display');
+                                                }
+                                            });
+                                            db.close();
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            })(i,tmpPath,tmpName,tmpURL,tmpLength);
         }
     });
 });
@@ -257,12 +278,14 @@ app.post('/Delete/:id', function (req, res) {
             helpers.renderError(res);
         } else {
             res.redirect('/Display');
+
+            
         }
     });
 });
 
 // Route for updating the status of container content view flag, "true" indicates card view, "false" indicates list view
-app.post('/ContentViewFlag/:flag', function (req,res) {
+app.post('/ContentViewFlag/:flag', function (req, res) {
     console.log("Container Content View Changed: " + (req.params.flag));
     content_view_flag = (req.params.flag === "true");
     res.send();
