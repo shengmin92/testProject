@@ -31,8 +31,8 @@ var cs = nconf.get("CONNECTION_STRING");
 var blobUri = "";
 
 var MongoClient = require('mongodb').MongoClient;
-var uri = "mongodb://shengmin:shengmin@testcluster-shard-00-00-nwd5k.mongodb.net:27017,testcluster-shard-00-01-nwd5k.mongodb.net:27017,testcluster-shard-00-02-nwd5k.mongodb.net:27017/shengmin?ssl=true&replicaSet=TestCluster-shard-0&authSource=admin";
-var loopflag=false;
+var uri = nconf.get("MONGODB_CONNECTION_STRING");
+
 
 // Global request options, set the retryPolicy
 var blobClient = azure.createBlobService(cs).withFilter(new azure.ExponentialRetryPolicyFilter());  // 之后删掉
@@ -279,7 +279,7 @@ app.post('/Delete/:id', function (req, res) {
         } else {
             res.redirect('/Display');
 
-            
+
         }
     });
 });

@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ed9e18d8-260c-4aff-902e-8489bae7ee2c" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package-lock.json" afterPath="$PROJECT_DIR$/package-lock.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/display.ejs" afterPath="$PROJECT_DIR$/views/display.ejs" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -33,8 +29,8 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="361">
-              <caret line="281" column="12" lean-forward="false" selection-start-line="281" selection-start-column="12" selection-end-line="281" selection-end-column="12" />
+            <state relative-caret-position="270">
+              <caret line="32" column="49" lean-forward="true" selection-start-line="32" selection-start-column="49" selection-end-line="32" selection-end-column="49" />
               <folding />
             </state>
           </provider>
@@ -335,12 +331,12 @@
       <workItem from="1499696276655" duration="45298000" />
       <workItem from="1500060901365" duration="2821000" />
       <workItem from="1500300505830" duration="3254000" />
-      <workItem from="1500387158091" duration="19531000" />
+      <workItem from="1500387158091" duration="19832000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="247087000" />
+    <option name="totallyTimeSpent" value="247388000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -706,8 +702,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="281" column="12" lean-forward="false" selection-start-line="281" selection-start-column="12" selection-end-line="281" selection-end-column="12" />
+        <state relative-caret-position="270">
+          <caret line="32" column="49" lean-forward="true" selection-start-line="32" selection-start-column="49" selection-end-line="32" selection-end-column="49" />
           <folding />
         </state>
       </provider>
