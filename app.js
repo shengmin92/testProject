@@ -193,7 +193,7 @@ app.post('/uploadhandler', function (req, res) {
             tmpURL = "https://" + account + ".blob.core.windows.net/" + containerName + "/" + tmpName;
             tmpLength = filearray.length;
 
-            (function(i,tmpPath,tmpName,tmpURL,tmpLength){
+            (function (i, tmpPath, tmpName, tmpURL, tmpLength) {
                 blobClient.createBlockBlobFromLocalFile(containerName, filearray[i].name, filearray[i].path, options, function (error) {
                     if (error) {
                         console.log(error);
@@ -216,7 +216,7 @@ app.post('/uploadhandler', function (req, res) {
                                     else {
                                         console.log("Contents to MongoDB:");
                                         console.log(JSON.stringify({
-                                            "file name": tmpName,
+                                            "file_name": tmpName,
                                             "Latitude": metadata['gpsLatitude'],
                                             "Longitude": metadata['gpsLongitude'],
                                             "URL": tmpURL
@@ -227,7 +227,7 @@ app.post('/uploadhandler', function (req, res) {
                                             db.collection(containerName).insertMany([
                                                 // MongoDB adds the _id field with an ObjectId if _id is not present
                                                 {
-                                                    "file name": tmpName,
+                                                    "file_name": tmpName,
                                                     "Latitude": metadata['gpsLatitude'],
                                                     "Longitude": metadata['gpsLongitude'],
                                                     "URL": tmpURL
@@ -246,25 +246,38 @@ app.post('/uploadhandler', function (req, res) {
                         });
                     }
                 });
-            })(i,tmpPath,tmpName,tmpURL,tmpLength);
+            })(i, tmpPath, tmpName, tmpURL, tmpLength);
         }
     });
 });
 
 // Route for deleting an existing container (folder)
 app.post('/DeleteContainer/:id', function (req, res) {
-    console.log("Container deleted: " + req.params.id);
+    console.log("========= Deleting container ...");
 
     blobClient.deleteContainerIfExists(req.params.id, function (error, result) {
         if (error) {
             // alert('Delete container failed, open brower console for more detailed info.');
             console.log(error);
         } else {
-            // alert('Delete ' + name + ' successfully!');
-            //refreshContainer();
+
+            console.log("Container deleted: " + req.params.id);
             if (containerName === req.params.id) {
+                (function(containerName){
+                    MongoClient.connect(uri, function (err, db) {
+                        if (err) {
+                            console.log(err);
+                            throw err;
+                        }else{
+                            db.collection(containerName).drop();
+                            console.log(containerName + " is also deleted from MongoDB");
+                        }
+                        db.close();
+                    });
+                })(containerName);
                 containerName = "";
             }
+
             return res.redirect('/');
         }
     });
@@ -272,11 +285,25 @@ app.post('/DeleteContainer/:id', function (req, res) {
 
 // Route for deleting an existing blob (image)
 app.post('/Delete/:id', function (req, res) {
-    console.log("Blob deleted: " + req.params.id);
+    console.log("========= Deleting blob...");
     blobClient.deleteBlob(containerName, req.params.id, function (error) {
         if (error != null) {
             helpers.renderError(res);
         } else {
+            console.log("Blob deleted: " + req.params.id);
+            MongoClient.connect(uri, function (err, db) {
+                if (err) throw err;
+                var myquery;
+                db.collection(containerName).deleteOne({"file_name": "" + req.params.id}, function (err, document) {
+                    if (err) {
+                        console.log(err);
+                        throw err;
+                    } else{
+                        console.log(req.params.id + " is also deleted from MongoDB");
+                    }
+                });
+                db.close();
+            });
             res.redirect('/Display');
 
 
@@ -374,9 +401,5 @@ function setPermissions(ctnName) {
     });
 }
 
-
-// function refreshContainerList() {
-//
-// }
 
 module.exports = app;
