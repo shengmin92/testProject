@@ -23,9 +23,9 @@ with the correspoding information from your Azure and MongoBD account so that yo
 Save this json file one directory level higher than the *testProject* directory, like this:
 
 ```
-parent/
-  |-- config.json
-  |-- testProject/
+| parent/
+|  | config.json
+|  | testProject/
 ```
 
 If the information for configuration are correct, the project should be ready to run.
