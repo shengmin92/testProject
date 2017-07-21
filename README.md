@@ -17,7 +17,7 @@ Then, create a file named *config.json* with the following JSON:
 }
 ```
 
-Replace <YOUR AZURE STORAGE NAME>, <YOUR AZURE STORAGE KEY>, <YOUR AZURE CONNECTION STRING>, and <YOUR MONGODB CONNECTION STRING> 
+Replace \<YOUR AZURE STORAGE NAME\>, \<YOUR AZURE STORAGE KEY\>, \<YOUR AZURE CONNECTION STRING\>, and \<YOUR MONGODB CONNECTION STRING\> 
 with the correspoding information from your Azure and MongoBD account so that you can get access to them. 
 
 Save this json file one directory level higher than the *testProject* directory, like this:
@@ -30,7 +30,7 @@ Save this json file one directory level higher than the *testProject* directory,
 
 If the information for configuration are correct, the project should be ready to run.
 
-Go to the *testProject* directory by terminal app and use the command:
+In terminal app, visit the *testProject* directory and use the command:
 ```
 npm start
 ```
