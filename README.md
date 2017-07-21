@@ -28,4 +28,10 @@ parent/
   |-- testProject/
 ```
 
-If the information for configuration are correct, the project should run.
+If the information for configuration are correct, the project should be ready to run.
+
+Go to the *testProject* directory by terminal app and use the command:
+```
+npm start
+```
+to run the project.
